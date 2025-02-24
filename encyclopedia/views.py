@@ -1,4 +1,6 @@
 from django.shortcuts import render
+from django.http import HttpResponseRedirect
+from django.urls import reverse
 from markdown import markdown
 from . import util
 from random import choice
@@ -27,4 +29,5 @@ def create(request):
 
 def random(request):
     random_page = choice(util.list_entries())
-    return show(request, random_page)
+    # Pass the title as a second argument to the reverse function
+    return HttpResponseRedirect(reverse("wiki:show", args=[random_page]))
