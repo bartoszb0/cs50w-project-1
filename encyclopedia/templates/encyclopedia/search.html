@@ -1,0 +1,18 @@
+{% extends "encyclopedia/layout.html" %}
+
+{% block title %}
+    Search
+{% endblock %}
+
+{% block body %}
+    <h1>Pages with "{{ search_page }}" in name</h1>
+
+    <ul>
+        {% for entry in entries %}
+            <li><a href="{% url 'wiki:show' entry %}">{{ entry }}</a></li>
+        {% empty %}
+            <h2>No page found</h2>
+        {% endfor %}
+    </ul>
+
+{% endblock %}
