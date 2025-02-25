@@ -74,13 +74,27 @@ def search(request):
         return HttpResponseRedirect(reverse("wiki:show", args=[search_page]))
     else:
         all_pages = util.list_entries()
-        all = []
+        matching_pages = []
 
         for page in all_pages:
             if search_page.lower() in page.lower():
-                all.append(page)
+                matching_pages.append(page)
 
         return render(request, "encyclopedia/search.html", {
-            "entries": all,
+            "entries": matching_pages,
             "search_page": search_page
         })
+
+
+def edit(request):
+    if request.method == "GET":
+        title = request.GET.get('title')
+        return render(request, "encyclopedia/edit.html", {
+            "title": title,
+            "content": util.get_entry(title)
+        })
+    elif request.method == "POST":
+        content = request.POST.get('content')
+        title = request.POST.get('title')
+        util.save_entry(title, content)
+        return HttpResponseRedirect(reverse("wiki:show", args=[title]))
