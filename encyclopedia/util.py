@@ -32,6 +32,6 @@ def get_entry(title):
     """
     try:
         f = default_storage.open(f"entries/{title}.md")
-        return f.read().decode("utf-8")
+        return f.read().decode("utf-8").replace("\r\n", "\n") # .replace("\r\n", "\n") makes so that new blank lines are not being added when content is saved
     except FileNotFoundError:
         return None

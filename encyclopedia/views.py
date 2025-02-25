@@ -87,8 +87,17 @@ def search(request):
 
 
 def edit(request):
+    # http://127.0.0.1:8000/wiki/edit doesnt work
     if request.method == "GET":
         title = request.GET.get('title')
+        if title is None:
+            return render(request, "encyclopedia/error.html", {
+                "page_not_found": "TODO"
+            })
+        elif title not in util.list_entries():
+            return render(request, "encyclopedia/error.html", {
+                "page_not_found": title
+            })
         return render(request, "encyclopedia/edit.html", {
             "title": title,
             "content": util.get_entry(title)

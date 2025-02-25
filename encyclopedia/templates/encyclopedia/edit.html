@@ -6,6 +6,7 @@
 
 {% block body %}
 
+    {% if title %}
     <h1>Edit "{{ title }}" page</h1>
     <form action="{% url 'wiki:edit' %}" method="post">
         {% csrf_token %}
@@ -14,5 +15,8 @@
         <p></p>
         <input type="submit" value="Save">
     </form>
+    {% else %}
+    <h1>Go to certain page in order to edit it</h1>
+    {% endif %}
 
 {% endblock %}
