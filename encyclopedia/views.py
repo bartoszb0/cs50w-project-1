@@ -1,9 +1,15 @@
+from django import forms
 from django.shortcuts import render
 from django.http import HttpResponseRedirect
 from django.urls import reverse
 from markdown import markdown
 from . import util
 from random import choice
+
+
+class NewPageForm(forms.Form):
+    title = forms.CharField(widget=forms.TextInput(attrs={'name':'title', 'placeholder': 'Enter title'}))
+    text = forms.CharField(widget=forms.Textarea(attrs={'name': 'text', 'placeholder': 'Enter Markdown content for the page'}))
 
 
 def index(request):
@@ -25,7 +31,31 @@ def show(request, title):
     
 
 def create(request):
-    return render(request, "encyclopedia/create.html")
+    if request.method == "POST":
+        form = NewPageForm(request.POST)
+        if form.is_valid():
+            title = form.cleaned_data["title"]
+            text = form.cleaned_data["text"]
+
+            all_pages = [word.lower() for word in util.list_entries()]
+
+            if title.lower() in all_pages:
+                return render(request, "encyclopedia/error_creating.html", {
+                    "title": title
+                })
+            else:
+                util.save_entry(title, text)
+                return HttpResponseRedirect(reverse("wiki:show", args=[title]))
+
+        else:
+            return render(request, "encyclopedia/create.html", {
+                "form": form
+            })
+            
+    else:
+        return render(request, "encyclopedia/create.html", {
+            "form": NewPageForm()
+        })
 
 
 def random(request):
